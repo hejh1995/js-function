@@ -25,13 +25,17 @@ function extend (deep, target, ...options) {
     target = deep || {};
     deep = false;
   }
-  if (typeof targte !== 'object') target = {};
+  if (typeof target !== 'object') target = {};
   let src, copy, clone, copyIsArray;
   options.forEach(item  => {
     if (item !== null) {
       for (let name in item) {
         src = target[name];
         copy = item[name];
+        // 解决循环调用。
+        if (target === copy) {
+          continue;
+        }
         // 加入类型判断，
         if (deep && copy && (isPlainObject(copy) || copyIsArray = Array.isArray(copy))) {
           if (copyIsArray) {
