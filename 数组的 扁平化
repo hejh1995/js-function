@@ -1,0 +1,59 @@
+https://github.com/mqyqingfeng/Blog/issues/36
+## 1. 循环递归：
+```
+function flatten(arr) {
+  var result = [];
+  arr.forEach(item => {
+    if (Array.isArray(item)) {
+      result = result.concat(flatten(item));
+    } else {
+      result.push(item);
+    }
+  }
+  return result;
+}
+```
+## 2. reduce方法：
+```
+function flatten(arr) {
+  return arr.reduce((prev, next) => {
+    return prev.concat(Array.isArray(next) ? flatten(next) : next)
+  }, [])
+}
+```
+##3. 扩展运算符：
+```
+function flatten(arr) {
+  while(arr.some(item => Array.isArray(item))) {
+    arr = [].concat(...arr);
+  }
+  return arr; 
+}
+```
+##4. undercore 中的抽象的扁平函数：
+```
+//  为了方便多个API调用， 进行了更多配置
+/**
+ * 数组扁平化
+ * @param  {Array} input   要处理的数组
+ * @param  {boolean} shallow 是否只扁平一层
+ * @param  {boolean} strict  是否严格处理元素，下面有解释
+ * @param  {Array} output  这是为了方便递归而传递的参数
+ * 源码地址：https://github.com/jashkenas/underscore/blob/master/underscore.js#L528
+ */
+ function flatten(input, shallow, strict, output = []) {
+  input.forEach(item => {
+    if (Array.isArray(item)) {
+      if (shallow) {
+        item.forEach(value => output.push(value)) 
+      } else {
+        flatten(item, shallow, strict, output);
+      }
+    } else if (!strict){
+      output.push(item);
+    }
+  });
+  return output;
+ }
+
+```
