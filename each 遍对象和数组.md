@@ -11,4 +11,7 @@ function each(obj, callback) {
   }
   return obj;
 }
+console.time('each');
+...// 计算某段代码的运行时间
+console.timeEnd('each');
 ```
