@@ -32,17 +32,17 @@ function extend (deep, target, ...options) {
       for (let name in item) {
         src = target[name];
         copy = item[name];
-        // 解决循环调用。
+        // 解决循环引用。
         if (target === copy) {
           continue;
         }
         // 加入类型判断，
-        if (deep && copy && (isPlainObject(copy) || copyIsArray = Array.isArray(copy))) {
+        if (deep && copy && (isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
           if (copyIsArray) {
             copyIsArray = false;
             clone = src && Array.isArray(src) ? src : [];
           } else clone = src && isPlainObject(src) ? src : {};
-          target[name] = extend(deep, src, copy);
+          target[name] = extend(deep, clone, copy);
         } else if (copy !== undefined) target[name] = copy;
       }
     }
@@ -50,4 +50,18 @@ function extend (deep, target, ...options) {
   return target;
 }
 // 为了处理， 目标属性值 与 待复制的 对象的属性值类型不一致的情况， 加入类型判断。
+// var a = extend(true, [4, 5, 6, 7, 8, 9], [1, 2, 3]); // [1,2,3,7,8,9]
+// 
+var obj1 = {
+    value: {
+        3: 1
+    }
+}
+
+var obj2 = {
+    value: [5, 6, 7],
+}
+
+var b = extend(true, obj1, obj2) // {value: [5,6,7]};
+var c = extend(true, obj2, obj1) // {value: {3: 1}};
 ```
